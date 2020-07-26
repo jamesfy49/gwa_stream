@@ -2,3 +2,5 @@ node_modules
 client/node_modules
 userinfo.json
 api.json
+client/build
+client/.cache
