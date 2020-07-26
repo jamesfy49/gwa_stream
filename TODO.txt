@@ -1,0 +1,24 @@
+todo:
+
+- queue navigation 
+    - done
+- saving playlists externally
+    - done
+- fix queue styling
+    - i guess done i dont remember what it looked like before
+- playlist options
+    - done
+- adding songs to queue/ upnext
+    - done
+- volume
+    - done
+- choosing specific audios when theres multiple
+    - done finally
+- add links to icons/ github/ etc
+- shuffle/ looping
+    - done
+- rewind/ fast forward
+    - done
+- onFinish behavior
+    - done
+- figure out how to deploy again

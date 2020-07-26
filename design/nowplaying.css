@@ -1,0 +1,234 @@
+div.now-playing {
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:100px;
+    width:100vw;
+    background:rgb(255, 255, 255);
+    -webkit-box-shadow: 0px -10px 58px -33px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px -10px 58px -33px rgba(0,0,0,0.75);
+    box-shadow: 0px -10px 58px -33px rgba(0,0,0,0.75);
+    z-index:1000;
+}
+
+div.now-playing-inner {
+    position:relative;
+    height:100px;
+    width:100vw;
+    margin:0;
+    padding:0;
+}
+
+div.nowplaying-information {
+    position:absolute;
+    top:50%;
+    left:0;
+    transform:translate(15px,-50%);
+    height:80px;
+    width:30vw;
+    margin:10px;
+    padding:0;
+}
+
+div.nowplaying-title, div.nowplaying-artist {
+    width:30vw;
+    height:40px;
+    float:left;
+    line-height:40px;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div.nowplaying-title {
+    font-size:20px;
+    color:rgb(49, 49, 49);
+}
+
+div.nowplaying-artist {
+    font-size:14px;
+    line-height:14px;
+    color:rgb(87, 87, 87);
+}
+
+div.controls {
+    position:absolute;
+    width:15vw;
+    height:100px;
+    left:50%;
+    top:0;
+    transform:translateX(-50%);
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:row;
+}
+
+div.rewind, div.playpause, div.fastforward {
+    position:relative;
+    margin:0;
+}
+
+div.rewind, div.fastforward {
+    flex-grow:1;
+}
+
+div.playpause {
+    flex-grow: 2;
+}
+
+div.control-outer {
+    height:60px;
+    width:60px;
+    border-radius:50%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
+    padding:0;
+    cursor:pointer;
+    transition:opacity .1s ease-in-out;
+    overflow:hidden;
+}
+
+div.playpause div.control-outer {
+    background: rgb(70, 60, 202);
+}
+
+div.control-outer:hover {
+    opacity:.8;
+}
+
+div.control-outer-small {
+    height:50px;
+    width:50px;
+}
+
+div.control-inner {
+    position:relative;
+    height:60px;
+    width:60px;
+    margin:0;
+    padding:0;
+}
+
+div.control-inner-small {
+    height:50px;
+    width:50px;
+}
+
+div.control-inner img {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:40px;
+    margin:0;
+}
+
+div.control-inner-small img {
+    width:30px;
+}
+
+div.options {
+    position:absolute;
+    right:0;
+    top:50%;
+    height:60px;
+    transform:translate(-15px, -50%);
+}
+
+div.option-outer {
+    position:relative;
+    float:right;
+    height:60px;
+    width:80px;
+    margin:0;
+    padding:0;
+    cursor:pointer
+}
+
+div.option-outer img {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
+    width:30px;
+}
+
+div.queue {
+    position:absolute;
+    top:0;
+    right:0;
+    transform:translate(-30px, calc(-100% - 30px));
+    -webkit-box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
+    box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
+    z-index:1000;
+    background:#fff;
+    border-radius:5px;
+    max-width:30vw;
+    overflow-x:hidden;
+}
+
+div.queue-hidden {
+    display:none;
+}
+
+div.queue-header {
+    position:fixed;
+    top:0;
+    left:0;
+    width:30vw;
+    height:30px;
+    line-height:30px;
+    font-size:18px;
+    margin:0;
+    padding:10px;
+    background:#fff;
+    border-bottom:1px solid rgb(126, 126, 126);
+    color:rgb(70, 70, 70);
+}
+
+div.queue-items {
+    position:relative;
+    margin-top:50px;
+    max-height:60vh;
+    max-width:30vw;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+div.queue-audio-item{
+    position:relative;
+    float:left;
+    width:30vw;
+    margin:0;
+    padding:10px;
+    border-bottom:1px solid rgb(177, 177, 177);
+}
+
+div.queue-audio-title, div.queue-audio-subtitle, div.queue-audio-artist {
+    position:relative;
+    float:left;
+    width:30vw;
+    margin:5px 0;
+    line-height:20px;
+    font-size:14px;
+}
+
+div.queue-audio-title {
+    cursor:pointer;
+}
+
+div.queue-audio-title:hover {
+    color:rgb(63, 61, 150);
+}
+
+div.queue-audio-subtitle, div.queue-audio-artist {
+    width:15vw;
+    font-size: 12px;
+}
+

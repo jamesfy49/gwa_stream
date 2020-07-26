@@ -1,0 +1,92 @@
+
+div.side-panel {
+    position:absolute;
+    top:0;
+    left:0;
+    margin:0;
+    padding:0;
+    width:80px;
+    height:calc(100vh - 100px);
+    background: rgb(2,0,36);
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(38,53,102,1) 53%, rgba(127,145,210,1) 100%);     
+}
+
+div.side-panel-inner {
+    margin:0;
+    position:relative;
+    height:calc(100vh - 100px);
+    width:80px;
+    padding:0;
+}
+
+div.title-ico {
+    position:relative;
+    float:left;
+    height:80px;
+    width:80px;
+    margin:0;
+}
+
+div.title-ico img {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:40px;
+}
+
+div.panel-tabs-container {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:80px;
+    margin:0;
+    padding:0;
+}
+
+div.panel-tab {
+    position:relative;
+    float:left;
+    height:80px;
+    width:80px;
+    margin:0;
+    padding:0;
+    cursor:pointer;
+}
+
+div.panel-tab-active::after{
+    content: "";
+    position:absolute;
+    top:0;
+    right:0;
+    width:6px;
+    height:80px;
+    border-radius:3px;
+    margin:0;
+    background:rgb(133, 151, 255);
+    animation: tab-active .1s linear 1;
+}
+
+@keyframes tab-active {
+    0% {
+        width:0;
+    }
+    100% {
+        width:5px;
+    }
+}
+
+div.panel-tab img {
+    position:absolute;
+    width:35px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
+    transition:opacity .1s ease-in-out;
+}
+
+div.panel-tab:hover img {
+    opacity:0.8;
+}
