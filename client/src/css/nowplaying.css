@@ -56,12 +56,12 @@ div.progress-bar-buffer {
 
 div.progress-bar-inner {
     background:rgb(14, 82, 184);
-    z-index: 1100;
+    z-index: 11000;
 }
 
 div.progress-bar-buffer {
     background:rgba(103, 129, 247, 0.377);
-    z-index:1000;
+    z-index:10000;
 }
 
 div.time-indicator {
@@ -73,10 +73,18 @@ div.time-indicator {
     color:rgb(48, 48, 48);
     text-align:center;
     border-radius:5px;
+    z-index: 11001;
+    background:#fff;
+    border:2px solid #4157c3;
+    padding:5px;
+    border-radius:6px;
+    box-shadow:0 5px 10px -5px #000;
 }
 
 div.dark div.time-indicator {
-    color:rgb(165, 165, 165);
+    background:#000000;
+    border:2px solid #a0b0fc;
+    color:rgb(245, 245, 245);
 }
 
 div.progress-bar-hover {
@@ -88,7 +96,7 @@ div.progress-bar-hover {
 }
 
 div.progress-bar:hover {
-    height:15px;
+    height:25px;
 }
 
 div.dark div.progress-bar {
@@ -295,6 +303,123 @@ div.volume-bar-inner {
     width:40px;
     height:160px;
     z-index:1250;
+}
+
+@media screen and (max-width:1100px) {
+
+    div.now-playing {
+        height:120px;
+        bottom:60px;
+    }
+    div.now-playing-inner {
+        height:120px;
+    }
+    div.time-indicator {
+        height:10px;
+        line-height:10px;
+        font-size:12px;
+        padding:4px;
+    }
+
+    div.nowplaying-information {
+        top:0;
+        left:0;
+        transform:translate(0, 10px);
+        height:60px;
+        width:70vw;
+        margin:0 10px;
+        padding:0;
+    }
+    
+    div.nowplaying-title, div.nowplaying-artist {
+        width:60vw;
+        height:30px;
+        line-height:30px;
+        float:left;
+        overflow:hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size:12px;
+    }
+    
+    div.nowplaying-title {
+        font-size:14px;
+        color:rgb(49, 49, 49);
+    }
+
+    span.title-tag {
+        font-size:12px;
+        padding:1px;
+    }
+
+    div.controls {
+        width:30vw;
+        height:50px;
+        top:50%;
+        left:auto;
+        right:0;
+        transform:translate(0, -50%);
+        margin-right:10px;
+    }
+
+    div.control-outer {
+        height:50px;
+        width:50px;
+    }
+    div.control-outer-small {
+        height:40px;
+        width:40px;
+    }
+    
+    div.control-inner {
+        height:50px;
+        width:50px;
+    }
+    
+    div.control-inner-small {
+        height:40px;
+        width:40px;
+    }
+    
+    div.control-inner img {
+        width:30px;
+    }
+    
+    div.control-inner-small img {
+        width:20px;
+    }
+    
+    div.options {
+        right:auto;
+        left:0;
+        top:auto;
+        bottom:0;
+        height:60px;
+        width:65vw;
+        transform:translate(0,0);
+    }
+    
+    div.option-outer {
+        width:80px;
+        margin:0;
+        padding:0;
+        cursor:pointer;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        transition:transform .1s ease-in-out;
+    }
+    
+    div.option-outer:hover {
+        transform:translateY(-3px);
+    }
+    
+    div.option-outer img {
+        margin:0;
+        width:20px;
+        transition:opacity .1s ease-in-out;
+    }
+
 }
 
 div.volume-pheno, div.volume-hover {

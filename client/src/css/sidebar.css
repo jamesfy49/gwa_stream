@@ -76,7 +76,7 @@ div.panel-tab-active::after{
 
 div.settings-button {
     position:absolute;
-    bottom:0;
+    bottom:20px;
     width:80px;
     margin:10px 0;
     display:flex;
@@ -103,6 +103,15 @@ div.settings-button:hover img{
     }
 }
 
+@keyframes tab-active-mobile {
+    0% {
+        height:0;
+    }
+    100% {
+        height:5px;
+    }
+}
+
 div.panel-tab img {
     position:absolute;
     width:35px;
@@ -115,4 +124,62 @@ div.panel-tab img {
 
 div.panel-tab:hover img {
     opacity:0.8;
+}
+
+@media screen and (max-width:1100px) {
+    div.side-panel {
+        bottom:0;
+        top:auto;
+        height:60px;
+        width:100vw;
+        z-index:10000;
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(38,53,102,1) 53%, rgba(127,145,210,1) 100%);    
+    }
+
+    div.title-ico {
+        height:60px;
+        width:60px;
+    }
+
+    div.title-ico img {
+        width:30px;
+    }
+
+    div.side-panel-inner {
+        height:60px;
+        width:100vw;
+    }
+
+    div.panel-tabs-container {
+        height:60px;
+        width:auto;
+    }
+
+    div.panel-tab {
+        height:60px;
+        width:60px;
+    }
+    
+    div.panel-tab img {
+        width:25px;
+    }
+    
+    div.panel-tab-active::after{
+        top:0;
+        left:0;
+        width:60px;
+        height:4px;
+        animation: tab-active-mobile .1s linear 1;
+    }
+
+    div.settings-button {
+        right:0px;
+        width:60px;
+        bottom:auto;
+        transform:translate(0,20%);
+    }
+
+    div.settings-button img {
+        height:30px;
+    }
 }

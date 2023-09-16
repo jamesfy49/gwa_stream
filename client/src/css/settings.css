@@ -109,3 +109,56 @@ div.switch-container-active div.switch {
     transform: translateX(100%);
 }
 
+@media screen and (max-width:1100px) {
+    
+    div.settings-panel {
+        top:0;
+        bottom:auto;
+        right:0;
+        transform:translate(0, calc(-100% - 20px));
+    }
+}
+
+@media screen and (max-width:800px) {
+    
+    div.settings-panel {
+        height:60px !important;
+        width:200px !important;
+    }
+    div.settings-row {
+        height:60px !important;
+        width:200px !important;
+    }
+
+    div.settings-label {
+        line-height:60px;
+        font-size:16px;
+        flex:5;
+    }
+
+    div.settings-control {
+        flex:4;
+    }
+
+    div.switch-container {
+        height:20px;
+        width:40px;
+    }
+    
+    div.switch-container-inner {
+        height:20px;
+        width:40px;
+    }
+    
+    div.switch {
+        position:absolute;
+        height:18px;
+        width:18px;
+        top:0;
+        left:0;
+        border-radius:50%;
+        background:#fff;
+        border:1px solid rgb(179, 179, 179);
+        transition:all .1s ease-in-out;
+    }
+}

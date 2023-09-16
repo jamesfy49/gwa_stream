@@ -1,5 +1,5 @@
 :root {
-    --add-playlist-modal-width: 20vw;
+    --add-playlist-modal-width: 40vw;
 }
 
 div.playlist-add {
@@ -78,6 +78,10 @@ div.audio-select-item {
     display:flex;
     flex-direction:row;
     align-items: stretch;
+}
+
+div.playlist-add-item {
+    justify-content:center;
 }
 
 div.playlist-add-header,
@@ -165,7 +169,7 @@ div.playlist-add-check-active img {
 
 div.playlist-add-label,
 div.audio-select-label {
-    width:16vw;
+    width:75%;
     color:rgb(0, 0, 0);
 }
 
@@ -175,17 +179,18 @@ div.playlist-add-label {
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    text-align:center;
+    text-align:left;
+    margin-left:20px;
     padding-right:12px;
 }
 
 div.audio-select-label {
     display:table;
     padding:15px 0;
+    width:100% !important;
 }
 
 div.audio-select-label-inner {
-    max-width:9vw;
     display:table-cell;
     vertical-align:middle;
     text-align:center;
@@ -237,4 +242,19 @@ div.dark div.playlist-add-check-active {
 
 div.dark div.playlist-add-check-active:hover {
     background: rgb(145, 170, 238)
+}
+
+
+@media screen and (max-width:1100px) {
+    :root {
+        --add-playlist-modal-width: 80vw !important;
+    }
+
+    div.playlist-add-label {
+        text-align:left;
+        width:71%;
+        margin-left:20px;
+        padding-right:0px;
+    }
+    
 }

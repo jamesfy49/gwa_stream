@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import ReactPlayer from 'react-player';
+
 import Sound from 'react-sound';
 import { connect } from 'react-redux';
 
@@ -19,8 +21,10 @@ const mapDispatchToProps = {
     setDuration: nowPlayingActions.setDuration,
     updateTime: nowPlayingActions.updateTime,
     setPlaying: nowPlayingActions.setPlaying,
-    seekTo: nowPlayingActions.seekTo,
     setBuffer: nowPlayingActions.setBuffer,
+    setSeek: nowPlayingActions.setSeek,
+    setLoading: nowPlayingActions.setLoading,
+    play: nowPlayingActions.play,
 
     setQueue: queueActions.setQueue
 };
@@ -33,59 +37,84 @@ class AudioPlayerBind extends Component {
             loadingSrc: false,
             id: undefined,
             src: undefined,
-            active: undefined
+            active: undefined,
+            error: false,
+            lastSeekTime: null
         };
-        this.handleOnPlaying = this.handleOnPlaying.bind(this);
-        this.handleOnLoading = this.handleOnLoading.bind(this);
+        this.handleProgress = this.handleProgress.bind(this);
+        this.handleOnDuration = this.handleOnDuration.bind(this);
+        this.handleOnSeek = this.handleOnSeek.bind(this);
+    }
+    
+    ref = (player) => {
+        this.player = player
     }
 
     nextSong() {
-        if(this.props.settings.loop === 2) {
-            this.props.seekTo(0);
+        if(this.state.error) {
+            console.log("handled error, restarting");
+            let t = this.props.nowPlaying.currentTime;
+            let queue = this.props.queue;
+            let current = this.props.nowPlaying.current;
+            this.props.endPlayback();
+            this.props.setPlaying(queue[current], current);
+            this.props.seekTo(t)
         } else {
-            const current = this.props.nowPlaying.current;
-            const queue = this.props.queue;
-            if(current === queue.length - 1) {
-                if(this.props.settings.loop === 1) {
-                    this.props.setPlaying(0, queue[0]);
-                } else {
-                    this.props.endPlayback();
-                    this.props.setQueue([]);
-                }
+            if(this.props.settings.loop === 2) {
+                this.props.seekTo(0);
             } else {
-                this.props.setPlaying(queue[current + 1], current + 1);
+                const current = this.props.nowPlaying.current;
+                const queue = this.props.queue;
+                if(current === queue.length - 1) {
+                    if(this.props.settings.loop === 1) {
+                        this.props.setPlaying(0, queue[0]);
+                    } else {
+                        this.props.endPlayback();
+                        this.props.setQueue([]);
+                    }
+                } else {
+                    this.props.setPlaying(queue[current + 1], current + 1);
+                }
             }
         }
     }
 
-    handleOnPlaying(e) {
-        this.props.setDuration(e.duration);
-        this.props.updateTime(e.position);
-    }
-
-    handleOnLoading(e) {
-        let total = 0;
-        for(let i = 0; i < e.buffered.length; i++) {
-            let elapsed = e.buffered[i].end - e.buffered[i].start;
-            total += elapsed;
+    componentWillUnmount() {
+        if(this.seekTimer) {
+            for(let i = 0; i < this.seekTimer.length; i++) {
+                clearInterval(this.seekTimer[i]);
+            }
         }
-        this.props.setBuffer(total);
-        this.props.setDuration(e.duration);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        /*
-        Object.entries(this.props).forEach(([key, val]) =>
-            prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-        );
-        if (this.state) {
-            Object.entries(this.state).forEach(([key, val]) =>
-            prevState[key] !== val && console.log(`State '${key}' changed`)
-            );
-        }
-        */
+
         if(this.state.loadingSrc) return;
         if(this.props.nowPlaying.audio === undefined) return;
+
+        if(this.props.nowPlaying.seekTo !== undefined) {
+            this.player.seekTo(this.props.nowPlaying.seekTo, false);
+            if(!this.seekTimer) {
+                this.seekTimer = [];
+            }
+            this.seekTimer.push(setInterval(() => {
+                let seekTo = Math.round(this.props.nowPlaying.seekTo);
+                let lastSeekTime = Math.round(this.state.lastSeekTime);
+                if(seekTo === lastSeekTime || !this.props.nowPlaying.seekTo) {
+                    this.props.setSeek(undefined);
+                    this.props.setLoading(false);
+                    this.props.play();
+                    for(let i = 0; i < this.seekTimer.length; i++) {
+                        clearInterval(this.seekTimer[i]);
+                    }
+                } else {
+                    if(this.props.nowPlaying.seekTo) {
+                        this.player.seekTo(this.props.nowPlaying.seekTo, false);
+                    }
+                }
+            },500));
+        }
+
         let shouldUpdate = false;
         if(prevState.id === undefined) {
             shouldUpdate = true;
@@ -102,10 +131,14 @@ class AudioPlayerBind extends Component {
             this.setState({loadingSrc: true});
             if(this.props.nowPlaying.playing) {
                 let url;
-                if(this.props.nowPlaying.audio.audios.length > 1) {
-                    url = this.props.nowPlaying.audio.audios[this.props.nowPlaying.audio.activeAudio];
-                } else {
-                    url = this.props.nowPlaying.audio.audios[0];
+                if(this.props.nowPlaying.audio.audios) {
+                    if(this.props.nowPlaying.audio.audios.length > 1) {
+                        let a = this.props.nowPlaying.audio.activeAudio === undefined ?
+                            0 : this.props.nowPlaying.audio.activeAudio
+                        url = this.props.nowPlaying.audio.audios[a];
+                    } else {
+                        url = this.props.nowPlaying.audio.audios[0];
+                    }
                 }
                 fetch("/api/gwa/getSource/", {
                     method: 'POST',
@@ -145,24 +178,41 @@ class AudioPlayerBind extends Component {
         }
     }
 
+    handleProgress(state) {
+        this.props.updateTime(state.playedSeconds);
+        this.props.setBuffer(state.loadedSeconds);
+    }
+
+    handleOnDuration(e) {
+        this.props.setDuration(e);
+    }
+
+    handleOnSeek(e) {
+        this.setState({lastSeekTime: e});
+    }
+
     render() {
-        /*if(!this.props.nowPlaying.playing) return null;
-        console.log("PLAYING FROM TIME: " + this.props.nowPlaying.currentTime);
-        */
+
         if(this.state.src === undefined) return null;
+
+        let volume = this.props.settings.volume;
+        volume = Math.min(Math.max(0, volume), 1);
+
         return(
-            <Sound
-                url={"/api/gwa/audio?src=" + this.state.src}
-                playStatus={this.props.nowPlaying.playing ?
-                    Sound.status.PLAYING : Sound.status.PAUSED}
-                playFromPosition={this.props.nowPlaying.currentTime}
+            <ReactPlayer
+                ref={this.ref}
+                loop={this.props.settings.loop === 2}
+                progressInterval={1000}
+                onProgress={this.handleProgress}
+                playing={this.props.nowPlaying.playing} 
+                onDuration={this.handleOnDuration}
+                controls={false}
+                onSeek={this.handleOnSeek}
                 volume={this.props.settings.muted ? 
-                    0 :this.props.settings.volume}
-                onLoading={this.handleOnLoading}
-                whileLoading={this.handleOnLoading}
-                onPlaying={this.handleOnPlaying}
-                stream={true}
-                onFinishedPlaying={() => this.nextSong()} />
+                    0 : volume}
+                url={"/api/gwa/audio?src=" + this.state.src} 
+                onEnded={() => this.nextSong()}
+                />
         )
     }
 }

@@ -15,7 +15,7 @@ const initState = {
         darkMode: false,
         loop: 0,
         shuffle: false,
-        volume: 100,
+        volume: 1,
         muted: false
     },
     view: {
@@ -39,7 +39,9 @@ const initState = {
         current: undefined,
         length: undefined,
         currentTime: undefined,
-        bufferTime: undefined
+        bufferTime: undefined,
+        seekTo: undefined,
+        loadingAudio: false
     }
 }
 

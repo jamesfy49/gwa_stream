@@ -21,10 +21,17 @@ class InfoBind extends Component {
                     </div>
                     <div className="info-description">
                         Web application for browsing, streaming, and
-                        creating playlists from the content of 
+                        creating playlists from the content of <span> </span>
                         <a href="https://reddit.com/r/gonewildaudio">
                              r/gonewildaudio
                         </a>
+                        <br/>
+                        <br/>
+                        GWAStream is an open source application (see GitHub link below for source code).
+                        GWAStream does not store or host any audio content. It is streamed directly from Soundgasm to your browser. Playlists are stored locally and are never sent to the server. Content is delivered via the Reddit API and is contingent on it being accessible through the public subreddit.
+                        <br/>
+                        <br/>
+                        For questions, comments, or concerns, please email me at <a href="mailto:jamesfy49@gmail.com">jamesfy49@gmail.com</a>
                     </div>
                     <div className="info-links">
                         <div className="info-link-item info-link-github">

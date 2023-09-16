@@ -41,11 +41,12 @@ export const nowPlayingActions = createActions(
     {
         SET_PLAYING: (item, index) => ({ item, index }),
         SET_ACTIVE: index => ({ index }),
-        SEEK_TO: time => ({ time }),
         TOGGLE_PLAY: isPlaying => ({ isPlaying }),
         SET_DURATION: duration => ({ duration }),
         UPDATE_TIME: time => ({ time }),
-        SET_BUFFER: bufferTime => ({ bufferTime })
+        SET_BUFFER: bufferTime => ({ bufferTime }),
+        SET_SEEK: seek => ({ seek }),
+        SET_LOADING: loading => ({ loading })
     },
     'PLAY',
     'PAUSE',

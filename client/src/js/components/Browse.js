@@ -249,50 +249,53 @@ class BrowseBind extends Component {
 
                         <div className="filter">
 
-                            <div className="filter-item filter-label">
-                                Sort by:
-                            </div>
-                            
-                            <div className="filter-item dropdown-outer">
-                                <div 
-                                    className="dropdown-selected"
-                                    onClick={
-                                        () => this.toggleDropdown("sort")
-                                    }>
-                                    <div className="selected-option">
-                                        {this.state.sort}
-                                    </div>
-                                    <div className="dropdown-arrow">
-                                        <img src={dropdownimg} alt="select"/>
-                                    </div>
+                            <div className="filter-unit">
+                                <div className="filter-item filter-label">
+                                    Sort by:
                                 </div>
-                                <DropdownOptions
-                                    visible={this.state.sortVisible}
-                                    options={sortModes}
-                                    update={this.updateSort} />
-                            </div>
-                            
-                            <div className="filter-item filter-label">
-                                Posts from:
-                            </div>
-                            
-                            <div className="filter-item dropdown-outer">
-                                <div 
-                                    className="dropdown-selected"
-                                    onClick={
-                                        () => this.toggleDropdown("time")
-                                    }>
-                                    <div className="selected-option">
-                                        {this.state.time}
+                                
+                                <div className="filter-item dropdown-outer">
+                                    <div 
+                                        className="dropdown-selected"
+                                        onClick={
+                                            () => this.toggleDropdown("sort")
+                                        }>
+                                        <div className="selected-option">
+                                            {this.state.sort}
+                                        </div>
+                                        <div className="dropdown-arrow">
+                                            <img src={dropdownimg} alt="select"/>
+                                        </div>
                                     </div>
-                                    <div className="dropdown-arrow">
-                                        <img src={dropdownimg} alt="select"/>
-                                    </div>
+                                    <DropdownOptions
+                                        visible={this.state.sortVisible}
+                                        options={sortModes}
+                                        update={this.updateSort} />
                                 </div>
-                                <DropdownOptions
-                                    visible={this.state.timeVisible}
-                                    options={timeModes}
-                                    update={this.updateTime} />
+                            </div>
+                            <div className="filter-unit">
+                                <div className="filter-item filter-label">
+                                    Posts from:
+                                </div>
+                                
+                                <div className="filter-item dropdown-outer">
+                                    <div 
+                                        className="dropdown-selected"
+                                        onClick={
+                                            () => this.toggleDropdown("time")
+                                        }>
+                                        <div className="selected-option">
+                                            {this.state.time}
+                                        </div>
+                                        <div className="dropdown-arrow">
+                                            <img src={dropdownimg} alt="select"/>
+                                        </div>
+                                    </div>
+                                    <DropdownOptions
+                                        visible={this.state.timeVisible}
+                                        options={timeModes}
+                                        update={this.updateTime} />
+                                </div>
                             </div>
                             
                             <div className="filter-item execute-filter">

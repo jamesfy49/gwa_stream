@@ -1,4 +1,7 @@
-const createServer = require('http').createServer;
+const http = require('http');
+const https = require('https');
+const _ = require('underscore');
+const createServer = http.createServer;
 const axios = require('axios');
 const formidable = require('formidable');
 const fs = require('fs');
@@ -40,6 +43,7 @@ const refreshToken = () => {
         axios.post(token_url, qs.stringify(req_body), config)
             .then((result) => {
                 token = result.data.access_token;
+                console.log(token);
                 expiration = Date.now() + (result.data.expires_in * 1000);
                 resolve();
             })
@@ -50,20 +54,24 @@ const refreshToken = () => {
     });
 }
 
+const afterRefresh = (f, req, res) => {
+    if(Date.now() >= expiration || expiration === undefined) {
+        refreshToken()
+            .then(() => f(req, res))
+            .catch(() => {
+                res.end();
+            });
+    } else {
+        f(req, res);
+    }
+}
+
 const handler = (req, res) => {
     const request_path = req.url.split("?")[0];
     switch(request_path) {
         case "/api/gwa/browse/":
         case "/api/gwa/browse":
-            if(Date.now() >= expiration || expiration === undefined) {
-                refreshToken()
-                    .then(() => returnAudios(req, res))
-                    .catch(() => {
-                        res.end();
-                    });
-            } else {
-                returnAudios(req, res);
-            }
+            afterRefresh(returnAudios, req, res);
             break;
         case "/api/gwa/getSource/":
         case "/api/gwa/getSource":
@@ -72,6 +80,10 @@ const handler = (req, res) => {
         case "/api/gwa/audio/":
         case "/api/gwa/audio":
             returnAudio(req, res);
+            break;
+        case "/api/gwa/getPlaylistData/":
+        case "/api/gwa/getPlaylistData":
+            afterRefresh(getPlaylistData, req, res);
             break;
         default:
             res.end();
@@ -95,11 +107,22 @@ const returnSource = (req, res) => {
     })
 }
 
-const returnAudio = (req, res) => {
+function returnAudio(req, res) {
 
     const query = url.parse(req.url, true).query;
     const audio_src = `https://media.soundgasm.net/sounds/${query.src}`;
 
+    https.get(audio_src, function(audioFile) {
+        const headers = _.extend(_.pick(audioFile.headers, 'accept-ranges', 'content-type', 'content-length'), { 'Access-Control-Allow-Origin': '*' });
+        Object.keys(headers).forEach(item => {
+            res.setHeader(item, headers[item]);
+        });
+        audioFile.pipe(res);
+    }).on('error', function(err) {
+        console.error(err);
+    }).end();
+
+    /*
     const config = {
         responseType: 'stream',
         headers: {
@@ -118,11 +141,13 @@ const returnAudio = (req, res) => {
             const end = begin + parseInt(length) - 1; 
 
             let contentRange = `bytes ${begin}-${end}/${length}`;
+            */
             /*
             if(req.headers['user-agent'].indexOf("Chrome") !== -1) {
                 contentRange = `bytes 0-${length - 1}/${length}`;
             }
             */
+           /*
             const head = {
                 'Access-Control-Allow-Origin': "*",
                 'Connection': 'keep-alive',
@@ -139,6 +164,17 @@ const returnAudio = (req, res) => {
             res.writeHead(404);
             res.end();
         });
+        const response = await axios(
+            {
+                url: audio_src,
+                method: 'GET',
+                responseType: 'stream'
+            }
+            );
+            
+            response.data.pipe(res);
+            */
+    
 }
 
 const returnAudios = (req, res) => {
@@ -231,44 +267,12 @@ const returnAudios = (req, res) => {
     
         axios.get(url, config)
             .then(response => {
-    
+                
                 const after = response.data.data.after;
-    
-                let results = response.data.data.children.map(item => {
-                    return {
-                        'id': item.data.id,
-                        'title': item.data.title,
-                        'selftext': item.data.selftext,
-                        'author': item.data.author,
-                        'url': item.data.url
-                    }
-                });
-
-                results.forEach(element => {
-                    let title = element.title;
-                    element.titlePlain = title;
-                    let tagregex = new RegExp(/\[(.*?)\]/g);
-                    title = title.replace(tagregex, (match, p1) => {
-                        let replacement = 
-                            "<span class='title-tag'>"
-                            + p1
-                            + "</span>";
-                        return replacement;
-                    });
-                    element.title = title;
-
-                    let audioregex = new RegExp(/(https?):\/\/soundgasm.net\/u\/([A-Za-z0-9\_\-]+)?\/([A-Za-z0-9\-\_]+)?/g);
-                    let audios = element.selftext.match(audioregex);
-                    audios = [...new Set(audios)];
-                    element.audios = audios != null ? audios : [];
-                });
-
-                results = results.filter(element => 
-                    element.audios.length != []
-                );
+                const formattedAudio = formatAudioData(response.data.data.children);
     
                 res.writeHead(200, {"Content-Type":"application/json"});
-                res.end(JSON.stringify({after, results}));
+                res.end(JSON.stringify({after, results: formattedAudio}));
             })
             .catch(error => {
                 console.log(error);
@@ -277,6 +281,93 @@ const returnAudios = (req, res) => {
             });
     })
 
+}
+
+const getPlaylistData = (req, res) => {
+
+    const form = new formidable.IncomingForm();
+    form.parse(req, (err, fields) => {
+        
+        if(fields.names === '') {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify({error:true, message: "Error retrieving data"}));
+            return;
+        }
+
+        if(fields.names.length > 1000) {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify({error:true, message: "Error retrieving data"}));
+            return;
+        }
+
+        const config = {
+            headers: {
+                'Authorization': "bearer " + token,
+                'User-Agent': "GWAStream by primetime"
+            }
+        }
+
+        let url = "https://oauth.reddit.com/by_id/";
+        url += fields.names;
+
+        axios.get(url, config)
+        .then(response => {
+
+            if(response.error) {
+                res.writeHead(200, {"Content-Type":"application/json"});
+                res.end(JSON.stringify({error:true, message: "Error retrieving data"}));
+                return;
+            }
+
+            const formattedAudio = formatAudioData(response.data.data.children);
+
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify({results: formattedAudio}));
+        })
+        .catch((error) => {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify({error:true, message: "Error retrieving data"}));
+        });
+    
+    })
+}
+
+const formatAudioData = (rawData) => {
+
+    let results = rawData.map(item => {
+        return {
+            'id': item.data.id,
+            'title': item.data.title,
+            'selftext': item.data.selftext,
+            'author': item.data.author,
+            'url': item.data.url,
+        }
+    });
+
+    results.forEach(element => {
+        let title = element.title;
+        element.titlePlain = title;
+        let tagregex = new RegExp(/\[(.*?)\]/g);
+        title = title.replace(tagregex, (match, p1) => {
+            let replacement = 
+                "<span class='title-tag'>"
+                + p1
+                + "</span>";
+            return replacement;
+        });
+        element.title = title;
+
+        let audioregex = new RegExp(/(https?):\/\/soundgasm.net\/u\/([A-Za-z0-9\_\-]+)?\/([A-Za-z0-9\-\_]+)?/g);
+        let audios = element.selftext.match(audioregex);
+        audios = [...new Set(audios)];
+        element.audios = audios != null ? audios : [];
+    });
+
+    results = results.filter(element => 
+        element.audios.length != []
+    );
+
+    return results;
 }
 
 createServer(handler).listen(_PORT);

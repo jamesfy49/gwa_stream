@@ -30,11 +30,6 @@ const nowPlaying = handleActions(
             current: action.payload.index
         }),
 
-        SEEK_TO: (state, action) => ({
-            ...state,
-            currentTime: action.payload.time
-        }),
-
         END_PLAYBACK: (state, action) => ({
             playing: false,
             current: undefined,
@@ -57,6 +52,16 @@ const nowPlaying = handleActions(
         SET_BUFFER: (state, action) => ({
             ...state,
             bufferTime: action.payload.bufferTime
+        }),
+
+        SET_SEEK: (state, action) => ({ 
+            ...state,
+            seekTo: action.payload.seek
+        }),
+
+        SET_LOADING: (state, action) => ({
+            ...state,
+            loadingAudio: action.payload.loading
         })
     },
     {
@@ -65,7 +70,9 @@ const nowPlaying = handleActions(
         current: undefined,
         length: undefined,
         currentTime: undefined,
-        bufferTime: undefined
+        bufferTime: undefined,
+        seekTo: undefined,
+        loadingAudio: false
     }
 )
 

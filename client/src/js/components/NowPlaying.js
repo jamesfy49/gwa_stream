@@ -52,11 +52,13 @@ const mapDispatchToProps = {
 
     setPlaying: nowPlayingActions.setPlaying,
     setActive: nowPlayingActions.setActive,
-    seekTo: nowPlayingActions.seekTo,
     endPlayback: nowPlayingActions.endPlayback,
     togglePlay: nowPlayingActions.togglePlay,
     setDuration: nowPlayingActions.setDuration,
-    updateTime: nowPlayingActions.updateTime
+    updateTime: nowPlayingActions.updateTime,
+    setSeek: nowPlayingActions.setSeek,
+    setLoading: nowPlayingActions.setLoading,
+    pause: nowPlayingActions.pause
 };
 
 class NowPlayingBind extends Component {
@@ -117,10 +119,9 @@ class NowPlayingBind extends Component {
 
     formatTime(seconds) {
         if(seconds === undefined) return "00:00";
-        let total = seconds / 1000;
-        let m = total < 60 ? 0 : Math.floor(total / 60);
+        let m = seconds < 60 ? 0 : Math.floor(seconds / 60);
         let mString = (m < 10) ? "0" + m : m;
-        let s = Math.floor(total % 60);
+        let s = Math.floor(seconds % 60);
         let sString = (s < 10) ? "0" + s : s;
         let time = mString + ":" + sString;
         return time;
@@ -154,7 +155,8 @@ class NowPlayingBind extends Component {
         const rect = e.currentTarget.getBoundingClientRect();
         const y = e.clientY - rect.top;
         const height = e.currentTarget.offsetHeight;
-        const r = Math.floor(((height - y) / height) * 100);
+        let r = ((height - y) / height);
+        r = Math.min(1, Math.max(0, r));
         this.setState({
             hoverVolume: r
         });
@@ -162,7 +164,9 @@ class NowPlayingBind extends Component {
 
     seekTo(e) {
         if(this.props.nowPlaying.audio === undefined) return;
-        this.props.seekTo(this.state.seekTime);
+        this.props.setLoading(true);
+        this.props.setSeek(this.state.seekTime);
+        this.props.pause();
     }
 
     setVolume(e) {
@@ -192,7 +196,7 @@ class NowPlayingBind extends Component {
         if(this.state.delay) return;
         if(this.props.nowPlaying.currentTime > 2000
             || this.props.nowPlaying.current === 0) {
-            this.props.seekTo(0);
+            this.props.setSeek(0);
         } else {
             const current = this.props.nowPlaying.current;
             this.props.setPlaying(this.props.queue[current - 1], current - 1);
@@ -203,7 +207,7 @@ class NowPlayingBind extends Component {
     nextSong() {
         if(this.state.delay) return;
         if(this.props.settings.loop === 2) {
-            this.props.seekTo(0);
+            this.props.setSeek(0);
         } else {
             const current = this.props.nowPlaying.current;
             const queue = this.props.queue;
@@ -234,9 +238,9 @@ class NowPlayingBind extends Component {
         if(this.props.settings.muted) {
             volumeImg = dark ? mutewhite : mute;
         } else {
-            if(this.props.settings.volume > 66.6) {
+            if(this.props.settings.volume > .66) {
                 volumeImg = dark ? volumehighwhite : volumehigh;
-            } else if(this.props.settings.volume > 33.3) {
+            } else if(this.props.settings.volume > .33) {
                 volumeImg = dark ? volumemediumwhite : volumemedium;
             } else {
                 volumeImg = dark ? volumelowwhite : volumelow;
@@ -287,7 +291,7 @@ class NowPlayingBind extends Component {
                             <div
                                 className="time-indicator"
                                 style={{
-                                    transform: `translate(${this.state.hoverTransform}px, 20px)`
+                                    transform: `translate(${this.state.hoverTransform}px, -40px)`
                                 }}>
                                 {this.getTime()}
                             </div> : null
@@ -396,12 +400,12 @@ class NowPlayingBind extends Component {
                                         <div 
                                             className="volume-pheno"
                                             style={{
-                                                height: this.props.settings.volume + "%"
+                                                height: (this.props.settings.volume * 100) + "%"
                                             }}></div>
                                         <div 
                                             className="volume-hover"
                                             style={{
-                                                height: this.state.hoverVolume + "%"
+                                                height: (this.state.hoverVolume * 100) + "%"
                                             }}></div>
                                     </div>
                                 </div> : null

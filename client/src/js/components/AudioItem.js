@@ -20,7 +20,8 @@ const mapStateToProps = (state, props) => ({
     playlists: state.playlists,
     nowPlaying: state.nowPlaying,
     settings: state.settings,
-    view: state.view    
+    view: state.view,
+    queue: state.queue
 });
 
 const mapDispatchToProps = {
@@ -41,6 +42,7 @@ class QueueActions extends Component {
     
     constructor(props) {
         super(props);
+        this.touchFlag = true;
         this.state = {
             activeAudio: 0
         }
@@ -50,22 +52,43 @@ class QueueActions extends Component {
         this.setState({
             activeAudio: index
         });
+        return false;
     }
 
-    handleAddToUpNext() {
+    handleAddToUpNextTouch(e) {
+        this.handleAddToUpNext(e)
+        return false;
+    }
+
+    handleAddToUpNextClick(e) {
+        this.handleAddToUpNext(e)
+        return false;
+    }
+
+    handleAddToQueueTouch(e) {
+        this.handleAddToQueue(e)
+        return false;
+    }
+
+    handleAddToQueueClick(e) {
+        this.handleAddToQueue(e)
+        return false;
+    }
+
+    handleAddToUpNext(e) {
         let audio = {...this.props.audio};
         if(audio.audios.length > 1) {
             audio.activeAudio = this.state.activeAudio;
         }
-        this.props.onAddToUpNext(audio);
+        this.props.onAddToUpNext(e, audio);
     }
     
-    handleAddToQueue() {
+    handleAddToQueue(e) {
         let audio = {...this.props.audio};
         if(audio.audios.length > 1) {
             audio.activeAudio = this.state.activeAudio;
         }
-        this.props.onAddToQueue(audio);
+        this.props.onAddToQueue(e, audio);
     }
 
     render() {
@@ -85,7 +108,9 @@ class QueueActions extends Component {
                                 <div 
                                     className="audio-options-audio-item"
                                     key={index}
-                                    onClick={() => this.changeActive(index)}>
+                                    onTouchStart={(e) => this.changeActive(index)}
+                                    onTouchEnd={(e) => e.preventDefault()}
+                                    onClick={(e) => this.changeActive(index)}>
                                     <div className="audio-options-radio-outer">
                                         <div 
                                             className={
@@ -109,12 +134,16 @@ class QueueActions extends Component {
                 <div className="audio-options-actions">
                     <div 
                         className="audio-options-action"
-                        onClick={() => this.handleAddToUpNext()}>
+                        onTouchStart={(e) => this.handleAddToUpNext(e)}
+                        onTouchEnd={(e) => e.preventDefault()}
+                        onClick={(e) => this.handleAddToUpNext(e)}>
                         Add To Up Next
                     </div>
                     <div 
                         className="audio-options-action"
-                        onClick={() => this.handleAddToQueue()}>
+                        onTouchStart={(e) => this.handleAddToQueue(e)}
+                        onTouchEnd={(e) => e.preventDefault()}
+                        onClick={(e) => this.handleAddToQueue(e)}>
                         Add To Queue
                     </div>
                 </div>
@@ -128,7 +157,8 @@ class AudioItemBind extends Component {
         super(props);
         this.state = {
             textVisible: false,
-            optionsVisible: false
+            optionsVisible: false,
+            queueActionTouched: false
         }
         this.addToUpNext = this.addToUpNext.bind(this);
         this.addToQueue = this.addToQueue.bind(this);
@@ -139,7 +169,7 @@ class AudioItemBind extends Component {
         this.props.showPlaylistAdd();
     }
 
-    playAudio() {
+    playAudio(e) {
         let index;
         if(this.props.view.browseVisible) {
             index = 0;
@@ -161,6 +191,17 @@ class AudioItemBind extends Component {
             this.props.setQueue(songs);
         }
         this.props.setPlaying(this.props.audio, index);
+        e.stopPropagation();
+    }
+
+    touchStart() {
+        this.toggleOptionVisible(true)
+    }
+
+    touchEnd(e) {
+        e.preventDefault();
+        this.setState({queueActionTouched:false})
+        return false;
     }
 
     toggleSelfText() {
@@ -169,24 +210,37 @@ class AudioItemBind extends Component {
         });
     }
 
-    toggleOptionVisible() {
+    toggleOptionVisible(touch) {
+        //if(touch && this.state.optionsVisible) return;
+        if(this.state.queueActionTouched) return false;
         this.setState({
             optionsVisible: !this.state.optionsVisible
         });
+        return false;
     }
 
-    addToUpNext(audio) {
+    addToUpNext(e, audio) {
+        e.stopPropagation();
         const current = this.props.nowPlaying.current;
         this.props.addToUpnext([audio], current);
         if(this.props.queue === undefined) {
             this.props.setPlaying(audio, 0);
+        } else {
+            if(this.props.queue.length === 0) {
+                this.props.setPlaying(audio, 0);
+            }
         }
     }
 
-    addToQueue(audio) {
+    addToQueue(e, audio) {
+        e.stopPropagation();
         this.props.addToQueue([audio]);
         if(this.props.queue === undefined) {
             this.props.setPlaying(audio, 0);
+        } else {
+            if(this.props.queue.length === 0) {
+                this.props.setPlaying(audio, 0);
+            }
         }
     }
 
@@ -201,7 +255,7 @@ class AudioItemBind extends Component {
                             <td>
                                 <div 
                                     className="audio-title"
-                                    onClick={() => this.playAudio()}
+                                    onClick={(e) => this.playAudio(e)}
                                     dangerouslySetInnerHTML={
                                         {__html: audio.title}
                                     }>
@@ -256,6 +310,8 @@ class AudioItemBind extends Component {
                                     </div>
                                     <div 
                                         className="audio-options"
+                                        onTouchStart={() => this.touchStart()}
+                                        onTouchEnd={(e) => this.touchEnd(e)}
                                         onMouseEnter={() => this.toggleOptionVisible()}
                                         onMouseLeave={() => this.toggleOptionVisible()}>
                                         <img

@@ -12,10 +12,13 @@ import { connect } from 'react-redux';
 import { 
     playlistActions,
     settingsActions } from '../actions/actions.js';
+import Loading from './Loading.js';
+import LoadingAudio from './LoadingAudio.js';
 
 const mapStateToProps = (state, props) => ({
     view: state.view,
-    settings: state.settings
+    settings: state.settings,
+    nowPlaying: state.nowPlaying
 });
 
 const mapDispatchToProps = {
@@ -28,12 +31,19 @@ class AppBind extends Component {
 
     componentDidMount() {
         if(storageAvailable('localStorage')) {
-            const dark = JSON.parse(localStorage['darkMode']);
+            let dark = localStorage["darkMode"];
+            if(dark) {
+                dark = JSON.parse(localStorage['darkMode']);
+            }
             if(dark) {
                 this.props.toggleDarkmode(dark);
             }
             if(localStorage['volume'] !== undefined) {
-                this.props.changeVolume(JSON.parse(localStorage['volume']));
+                let localVolume = JSON.parse(localStorage['volume']);
+                if(localVolume > 1) {
+                    localVolume = 1;
+                }
+                this.props.changeVolume(localVolume);
             }
         }
     }
@@ -52,6 +62,10 @@ class AppBind extends Component {
                 {
                     this.props.view.playlistAddVisible ? 
                     <AddToPlaylist /> : null
+                }
+                {
+                    this.props.nowPlaying.loadingAudio ?
+                    <LoadingAudio /> : null
                 }
             </div>
         )

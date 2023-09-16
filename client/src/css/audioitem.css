@@ -2,7 +2,7 @@
 div.audio-item {
     position:relative;
     float:left;
-    width:50vw;
+    width:56vw;
     border:1px solid rgb(204, 197, 197);
     margin:10px 0;
     border-radius:5px;
@@ -11,7 +11,9 @@ div.audio-item {
 }
 
 div.dark div.audio-item {
-    background: rgb(17, 16, 37);
+    background:rgb(15, 15, 15);
+    color:#fff;
+    border:1px solid rgb(53, 46, 156);
 }
 
 div.playlist-content > :last-child {
@@ -268,6 +270,150 @@ span.title-tag {
     border-radius:5px;
     color:#fff;
     transition:background .1s ease-in-out;
+}
+
+@media screen and (max-width:1600px) {
+    div.audio-item {
+        margin:2px 0;
+        padding:2px;
+    }
+    div.audio-title {
+        line-height:24px;
+        font-size:14px;
+    }
+    div.audio-subtitle {
+        font-size:14px;
+        line-height:16px;
+    }
+    div.audio-active-url {
+        padding:5px 0;
+        font-size:16px;
+        line-height:16px;
+    }
+    div.audio-info {
+        height:20px;
+    }
+    div.audio-author,
+    div.audio-toggle-text,
+    div.audio-link,
+    div.audio-options
+    div.add-to-playlist {
+        height:20px;
+        line-height:20px;
+        font-size:14px;
+        margin-right:15px;
+        margin-left:2px;
+    }
+
+    span.title-tag {
+        height:18px;
+        line-height:18px;
+        font-size:14px;
+        padding: 2px 6px;
+        margin:0 2px;
+        border-radius:5px;
+    }
+}
+
+@media screen and (max-width:1300px) {
+    div.audio-item {
+        margin:3px 0;
+        padding:2px;
+    }
+    div.audio-title {
+        line-height:22px;
+        font-size:14px;
+    }
+    div.audio-subtitle {
+        font-size:14px;
+        line-height:16px;
+    }
+    div.audio-active-url {
+        padding:5px 0;
+        font-size:16px;
+        line-height:16px;
+    }
+    div.audio-info {
+        height:20px;
+    }
+    div.audio-author,
+    div.audio-toggle-text,
+    div.audio-link,
+    div.audio-options
+    div.add-to-playlist {
+        height:20px;
+        line-height:20px;
+        font-size:14px;
+        margin-right:15px;
+        margin-left:2px;
+    }
+
+    span.title-tag {
+        height:16px;
+        line-height:16px;
+        font-size:12px;
+        padding: 2px 6px;
+        margin:0 2px;
+        border-radius:5px;
+    }
+}
+
+@media screen and (max-width:1100px) {
+    div.audio-item {
+        position:relative;
+        width:95vw;
+        transform:translateX(1.5vw);
+        z-index:-1;
+    }
+    div.audio-options-inner {
+        z-index:3400;
+        position:fixed;
+        right:0;
+        bottom:0;
+        left:auto;
+        top:auto;
+        transform:translate(-5px, -10px);
+        min-height:100px;
+        min-width:160px;
+        max-width:200px;
+        margin-right:10px;
+        background:#fff;
+        border-radius:10px;
+        border:1px solid rgb(163, 163, 163);
+        -webkit-box-shadow: 0px 0px 13px -4px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 13px -4px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 13px -4px rgba(0,0,0,0.75);
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        animation: audio-option-expand .1s linear 1 forwards;
+        overflow:hidden;
+        color:#000;
+    }
+
+    div.audio-options-inner.audio-options-inner-big {
+        max-width:90vw !important;
+        height:fit-content;
+    }
+
+    div.audio-options-inner-big div.audio-options-action {
+        height:auto;
+        word-wrap: break-word;
+        padding:0 10px;
+        font-size:12px;
+    }
+
+    div.audio-subtitle {
+        font-size:12px;
+    }
+
+    div.audio-radio-outer {
+        width:15vw !important;
+    }
+
+    div.audio-select-label {
+        width:80vw !important;
+    }
 }
 
 div.dark span.title-tag {

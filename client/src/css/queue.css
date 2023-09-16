@@ -13,14 +13,14 @@ div.queue {
     position:absolute;
     top:0;
     right:0;
-    transform:translate(-30px, calc(-100% - 15px));
+    transform:translate(-30px, calc(-100% - 20px));
     -webkit-box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
     box-shadow: 0px 4px 20px -8px rgba(0,0,0,0.75);
     z-index:1200;
     background:#fff;
-    border: 1px solid rgb(168, 168, 168);
-    border-radius:5px;
+    border: 2px solid rgb(168, 168, 168);
+    border-radius:10px;
     width:35vw;
     overflow-x:hidden;
     overflow-y:hidden;
@@ -44,7 +44,7 @@ div.queue-header {
     line-height:30px;
     font-size:18px;
     margin:0;
-    padding:10px;
+    padding:10px 20px;
     background:#fff;
     border-bottom:1px solid rgb(126, 126, 126);
     color:rgb(70, 70, 70);
@@ -136,4 +136,64 @@ div.dark div.no-queue-items {
 
 div.dark div.queue-audio-item-active {
     background:rgb(43, 44, 66);
+}
+
+@media screen and (max-width:1100px) {
+    
+    @keyframes expand-queue {
+        0% {
+            max-height:0;
+            width:0;
+        }
+        100% {
+            max-height:calc(60vh + 40px);
+            width:85vw;
+        }
+    }
+
+    div.queue {
+        border: 1px solid rgb(168, 168, 168);
+        border-radius:5px;
+        width:85vw;
+        animation: expand-queue .15s ease-in-out 1 forwards;
+        transform:translate(-10px, calc(-100% - 10px));
+    }
+        
+    div.queue-header {
+        width:85vw;
+        height:20px;
+        line-height:20px;
+        font-size:14px;
+    }
+
+    div.queue-items {
+        position:relative;
+        margin-top:40px;
+        max-height:60vh;
+        max-width:85vw;
+    }
+
+    div.queue-audio-item, div.no-queue-items{
+        width:85vw;
+        padding:10px;
+        padding-right:10px;
+    }
+
+    div.queue-audio-title,
+    div.queue-audio-artist,
+    div.queue-audio-active {
+        margin:0;
+        width:calc(85vw - 20px);
+    }
+
+    div.queue-audio-title {
+        font-size:12px;
+        width:calc(85vw - 20px);
+        line-height:23px;
+    }
+
+    div.queue-audio-title span.title-tag {
+        font-size:12px;
+    }
+
 }

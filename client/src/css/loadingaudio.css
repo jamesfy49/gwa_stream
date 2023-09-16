@@ -1,0 +1,36 @@
+.loading-audio {
+    position:fixed;
+    height:100vh;
+    width:100vw;
+    top:0;left:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background:rgba(0, 0, 0, 0.753);
+    z-index:1000000;
+}
+
+.loading-audio-caption {
+    font-size:2rem;
+    font-weight:bold;
+    transform:translateY(calc(-100% - 130px));
+    color:#fff;
+    text-align:center;
+    max-width:50vw;
+}
+
+@media screen and (max-width:800px) {
+    .loading-audio-caption {
+        font-size:1.5rem;
+        font-weight:bold;
+        transform:translateY(calc(-100% - 60px));
+        max-width:80vw;
+    }
+
+    .loading-audio > .loading {
+        transform: translate(-50%, calc(-50% + 50px)) rotate(45deg);
+    }
+
+}
