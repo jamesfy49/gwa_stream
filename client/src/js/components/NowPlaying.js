@@ -27,6 +27,8 @@ import loopone from '../../images/loopone.png';
 import looponewhite from '../../images/loopone-white.png';
 import shuffle from '../../images/shuffle.png';
 import shufflewhite from '../../images/shuffle-white.png';
+import downloadBtn from '../../images/download.png';
+import downloadBtnWhite from '../../images/download-white.png';
 
 import storageAvailable from '../checkStorage.js';
 
@@ -136,6 +138,12 @@ class NowPlayingBind extends Component {
     handlePlayPause() {
         if(this.props.nowPlaying.audio === undefined) return false;
         this.props.togglePlay(this.props.nowPlaying.playing);
+    }
+
+    handleDownload() {
+        if(this.props.nowPlaying.currentSrc === undefined) return;
+        const downloadUrl = 'https://media.soundgasm.net/sounds/' + this.props.nowPlaying.currentSrc;
+        window.open(downloadUrl, '_blank');
     }
 
     handleMouseMoveSeek(e) {
@@ -418,6 +426,14 @@ class NowPlayingBind extends Component {
                                 this.props.settings.darkMode ?
                                 queuewhite : queue
                             } alt="queue"/>
+                        </div>
+                        <div
+                            className="option-outer"
+                            onClick={() => this.handleDownload()}>
+                            <img src={
+                                this.props.settings.darkMode ?
+                                downloadBtnWhite : downloadBtn
+                            } alt="download"/>
                         </div>
                     </div>
 
