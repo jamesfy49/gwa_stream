@@ -46,7 +46,8 @@ export const nowPlayingActions = createActions(
         UPDATE_TIME: time => ({ time }),
         SET_BUFFER: bufferTime => ({ bufferTime }),
         SET_SEEK: seek => ({ seek }),
-        SET_LOADING: loading => ({ loading })
+        SET_LOADING: loading => ({ loading }),
+        SET_CURRENT_SRC: src => ({ src })
     },
     'PLAY',
     'PAUSE',
