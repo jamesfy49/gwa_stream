@@ -62,6 +62,11 @@ const nowPlaying = handleActions(
         SET_LOADING: (state, action) => ({
             ...state,
             loadingAudio: action.payload.loading
+        }),
+
+        SET_CURRENT_SRC: (state, action) => ({
+            ...state,
+            currentSrc: action.payload.src
         })
     },
     {
@@ -72,7 +77,8 @@ const nowPlaying = handleActions(
         currentTime: undefined,
         bufferTime: undefined,
         seekTo: undefined,
-        loadingAudio: false
+        loadingAudio: false,
+        currentSrc: undefined
     }
 )
 
