@@ -41,7 +41,8 @@ const initState = {
         currentTime: undefined,
         bufferTime: undefined,
         seekTo: undefined,
-        loadingAudio: false
+        loadingAudio: false,
+        currentSrc: undefined
     }
 }
 
