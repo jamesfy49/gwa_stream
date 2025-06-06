@@ -25,6 +25,7 @@ const mapDispatchToProps = {
     setSeek: nowPlayingActions.setSeek,
     setLoading: nowPlayingActions.setLoading,
     play: nowPlayingActions.play,
+    setCurrentSrc: nowPlayingActions.setCurrentSrc,
 
     setQueue: queueActions.setQueue
 };
@@ -156,6 +157,7 @@ class AudioPlayerBind extends Component {
                         src: response.src,
                         id: this.props.nowPlaying.audio.id
                     });
+                    this.props.setCurrentSrc(response.src);
                     if(this.props.nowPlaying.audio.audios.length > 1) {
                         this.setState({
                             active: this.props.nowPlaying.audio.activeAudio
