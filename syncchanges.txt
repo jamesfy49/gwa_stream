@@ -6,3 +6,15 @@ syncing changes:
 - `git reset --hard origin/master`
 - `git pull`
 - `git cherry-pick [branch]` (this will only cherry pick the tip, do `git cherry-pick master..[branch]` for all differences
+
+server changes
+
+- just `pm2 restart [pm2 process name]` you don't have to build
+
+client changes
+
+- you have to be using npm/node v18 
+  - so use nvm to switch to node 18
+  - *no sudo*
+- run `NODE_OPTIONS=--openssl-legacy-provider npm run build`
+- then `pm2 restart [pm2 process name]`
