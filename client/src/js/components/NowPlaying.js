@@ -140,10 +140,12 @@ class NowPlayingBind extends Component {
         this.props.togglePlay(this.props.nowPlaying.playing);
     }
 
-    handleDownload() {
-        if(this.props.nowPlaying.currentSrc === undefined) return;
-        const downloadUrl = 'https://media.soundgasm.net/sounds/' + this.props.nowPlaying.currentSrc;
-        window.open(downloadUrl, '_blank');
+    handleDownload(e) {
+        if (e.ctrlKey) {
+            if(this.props.nowPlaying.currentSrc === undefined) return;
+            const downloadUrl = 'https://media.soundgasm.net/sounds/' + this.props.nowPlaying.currentSrc;
+            window.open(downloadUrl, '_blank');
+        }
     }
 
     handleMouseMoveSeek(e) {
@@ -306,7 +308,9 @@ class NowPlayingBind extends Component {
                         }
                     </div>
 
-                    <div className="nowplaying-information">
+                    <div
+                        onClick={(e) => this.handleDownload(e)}
+                        className="nowplaying-information">
                         <div
                             className="nowplaying-title"
                             dangerouslySetInnerHTML={
@@ -426,14 +430,6 @@ class NowPlayingBind extends Component {
                                 this.props.settings.darkMode ?
                                 queuewhite : queue
                             } alt="queue"/>
-                        </div>
-                        <div
-                            className="option-outer"
-                            onClick={() => this.handleDownload()}>
-                            <img src={
-                                this.props.settings.darkMode ?
-                                downloadBtnWhite : downloadBtn
-                            } alt="download"/>
                         </div>
                     </div>
 
