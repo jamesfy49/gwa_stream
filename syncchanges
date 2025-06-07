@@ -1,0 +1,8 @@
+syncing changes:
+
+- `git reflog` to see the feature branch name
+- `git fetch origin`
+- `git checkout master`
+- `git reset --hard origin/master`
+- `git pull`
+- `git cherry-pick [branch]` (this will only cherry pick the tip, do `git cherry-pick master..[branch]` for all differences
